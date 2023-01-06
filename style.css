@@ -1,0 +1,103 @@
+    body {
+      max-width: 1200px;
+    }
+
+    footer {
+      clear: left;
+      padding-top: 10px;
+    }
+
+    .tile,
+    .oops {
+      height: 110px;
+      width: 90px;
+      float: left;
+      background: #ccc;
+      margin: 5px;
+      padding: 3px;
+      text-align: center;
+    }
+
+    #oops {
+      margin-top:10px;
+    }
+
+    input#reset {
+      bottom: 10px;
+      left: 0px;
+      position: absolute;
+    }
+
+    li.set.disabled {
+      color: #888;
+    }
+
+    p {
+      margin: 0;
+      bbackground: yellow;
+      text-align: center;
+    }
+
+    div.set-base {
+      background: #375798;
+      color: #ccc;
+    }
+
+    div.set-river1 {
+      background: #1B9CED;
+    }
+
+    div.set-ic {
+      background: #4B7Cb0;
+    }
+
+    div.set-tb {
+      background: #9A1D2F;
+    }
+
+    div#controls {
+      float: left;
+      height: 300px;
+      margin-right: 20px;
+      position: relative;
+      width: 16%;
+    }
+
+    ul {
+      padding: 0;
+    }
+
+    li {
+      list-style: none;
+      width: 100%;
+      height: 26px;
+    }
+
+    li a {
+      width: 100%;
+      display: block;
+      float: left;
+      margin-bottom: 3px 0 3px 0;
+      padding: 1px;
+    }
+
+    li.selected::after {
+      content: " \2713\a0";
+    }
+
+    div#tiles {
+      float: left;
+      width: 80%;
+      margin: 0 auto 0 auto;
+
+    }
+
+    h2 {
+      font-size: 16pt;
+      margin-top:0;
+    }
+
+    h1 {
+      font-size: 20pt;
+      text-align: center;
+    }

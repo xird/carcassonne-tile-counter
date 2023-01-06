@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <title>Carcassonne tile counter v3.0</title>
+
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="tiles-base.js"></script>
+    <script src="tiles-river1.js"></script>
+    <script src="tiles-ic.js"></script>
+
+    <script>
+      let last = null;
+      const selectedSets = ['base'];
+
+      $(document).ready(function(){
+        $('div#tiles').on('click', 'div.tile', function(){
+          var el = $(this).find('span');
+          var old = el.html();
+          var newv = 0 + old - 1;
+          if (newv > -1) {
+            el.html(newv);
+          }
+
+          if (newv == 0) {
+            $(this).css('opacity', '0.25');
+          }
+          else {
+            $(this).css('opacity', '0');
+            $(this).animate({'opacity': 1}, 200);
+          }
+
+          // Once a tile has been selected, enable undo and reset...
+          $('#oops').prop("disabled", false);
+          $('#reset').prop("disabled", false);
+
+          // ..and disable set selection(restored after "reset").
+          $('.set').addClass('disabled');
+
+          last = $(this);
+        });
+
+        $('ul#sets').on('click', 'li.set', function(){
+          if (!$(this).hasClass('disabled')) {
+            const setName = $(this).data('set');
+
+            if (selectedSets.includes(setName)) {
+              selectedSets.splice(selectedSets.indexOf(setName), 1);
+            } else {
+              selectedSets.push(setName);
+            }
+
+            setSelectedSetClasses();
+            listTiles();
+          }
+        });
+
+        $('#oops').on("click", function() {
+          $(this).prop("disabled", true);
+          var el = last.find('span');
+          var old = el.html();
+          var newv = parseInt(old) + 1;
+          el.html(newv);
+          last.css('opacity', '0');
+          last.animate({'opacity': 1}, 200);
+        });
+
+        $('#reset').on("click", function() {
+          $(this).prop("disabled", true);
+          $('#oops').prop("disabled", true);
+          init();
+        });
+
+        init();
+      });
+
+      const init = () => {
+        // Add set selections
+        const setUl = $('ul#sets');
+        setUl.empty();
+        for (const tileSetKey of Object.keys(tiles)) {
+          const li = $(`<li data-set="${tileSetKey}" class="set">${tiles[tileSetKey].name}</li>`); 
+          setUl.append(li);
+
+          setSelectedSetClasses();
+        }
+
+        listTiles();
+      };
+
+      const setSelectedSetClasses = () => {
+        const setLis = $('li.set');
+
+        setLis.each(function(index) {
+          let cssClass = "set";
+          const currentSetKey = $(this).data('set');
+          $(this).removeClass('selected');
+          if (selectedSets.includes(currentSetKey)) {
+            $(this).addClass('selected');
+          }
+        });
+      };
+
+      /**
+       * Generates the list of tiles in play.
+       */
+      const listTiles = () => {
+        const selectedTiles = [];
+
+        for (selectedSet of selectedSets) {
+          for (tileKey of Object.keys(tiles[selectedSet].tiles)) {
+            selectedTiles.push(tiles[selectedSet].tiles[tileKey]);
+          }
+        }
+
+        selectedTiles.sort((a, b) => {
+          return a.sortString > b.sortString ? 1 : -1;
+        });
+
+        const tilesDiv = $('div#tiles');
+        tilesDiv.empty();
+
+        for (tile of selectedTiles) {
+          const tileDiv = $(`<div class="tile set-${tile.set}"><img src="img/tilesets/${tile.set}/${tile.fileName}" width="90" height="90" /><p><span>${tile.count}</span> / ${tile.count}</p></div>`);
+          tilesDiv.append(tileDiv);
+        }
+      };
+
+    </script>
+
+    <link rel="stylesheet" href="style.css">
+  </head>
+
+  <body>
+    <h1>Carcassonne tile counter v3.0</h1>
+    <div id="controls">
+      <h2>Sets</h2>
+      <ul id="sets">
+      </ul>
+
+      <h2>Actions</h2>
+      <input type="button" id="oops" value="Undo" disabled="disabled" />
+      <input type="button" id="reset" value="Reset" disabled="disabled" />
+    </div>
+
+    <div id="tiles">
+    </div>
+
+    <footer>
+      <p>Carcassonne is a tile placement game designed by Klaus-Jurgen Wrede, and published by <a href="https://www.hans-im-glueck.de">Hans-im-Gluck</a> and <a href="https://www.riograndegames.com">Rio Grande Games</a>.</p>
+
+      <p>This counter tool was originally inspired by the Carcassonne Tile Distribution page by <a href="http://www.kofightclub.com">Russ Williams</a>. Leave any comments or feedback on the tool <a href="https://blog.ampli.fi/carcassonne-tile-counter-v20/">in the blog</a>. Source code available on <a href="https://github.com/xird/carcassonne-tile-counter">Github<a></p>
+    </footer>
+  </body>
+</html>
